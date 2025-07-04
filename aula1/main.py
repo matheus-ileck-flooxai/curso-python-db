@@ -41,5 +41,36 @@ cursor.execute(sql, ['Matheus teste', 4])
 connection.commit()
 
 
-cursor.close()
-connection.close()
+
+if __name__ == '__main__':
+    print(sql)
+
+
+    cursor.execute(
+        f'DELETE FROM {TABLE_NAME} '
+        'WHERE id = "3"'
+    )
+    cursor.execute(
+        f'DELETE FROM {TABLE_NAME} '
+        'WHERE id = 1'
+    )
+    connection.commit()
+
+    cursor.execute(
+        f'SELECT * FROM {TABLE_NAME}'
+    )
+
+    cursor.execute(
+        f'UPDATE {TABLE_NAME} '
+        'SET name="QUALQUER", weigth=67.89 '
+        'WHERE id = 2'
+    )
+    connection.commit()
+
+
+    for row in cursor.fetchall():
+        _id, name, weight = row
+        print(_id, name, weight)
+
+    cursor.close()
+    connection.close()
