@@ -1,9 +1,7 @@
 import pymysql
 import dotenv
 import os
-from typing import cast
 
-CURRENT_CURSOR = pymysql.cursors.SSDictCursor
 
 dotenv.load_dotenv()
 
@@ -12,13 +10,11 @@ connection = pymysql.connect(
     user=os.environ['MYSQL_USER'],
     password=os.environ['MYSQL_PASSWORD'],
     database=os.environ['MYSQL_DATABASE'],
-    cursorclass=CURRENT_CURSOR,
 )
 
 with connection:
   
     with connection.cursor() as cursor:
-        cursor = cast(CURRENT_CURSOR, cursor)
 
         sql = (
             f'UPDATE users '
@@ -29,16 +25,24 @@ with connection:
         cursor.execute(sql, ('caique', 19, 1))
 
         cursor.execute(f'SELECT * FROM users ')
-        print('For 1: ')
 
-        for row in cursor.fetchall_unbuffered():
+        data = cursor.fetchall()
+        
+        for row in data:
             print(row)
 
-            
-        print()
-        print('For 2: ')
-        for row in cursor.fetchall_unbuffered():
-            print(row)
+        cursor.execute(
+            'SELECT id from users ORDER BY id DESC LIMIT 1'
+        )
+        lastIdFromSelect = cursor.fetchone()
+        print('rowcount', cursor.rowcount)
+        print('lastrowid', cursor.lastrowid)
+        print('lastrowid na mão', lastIdFromSelect)
+
+        cursor.scroll(0, 'absolute')
+        print('rownumber', cursor.rownumber)
+
+      
     connection.commit()
 
 
