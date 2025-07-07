@@ -15,9 +15,28 @@ connection = pymysql.connect(
 
 with connection:
     with connection.cursor() as cursor:
-        #SQL
-        print(cursor)
+        cursor.execute(
+            'CREATE TABLE IF NOT EXISTS users ('
+            'id INT NOT NULL AUTO_INCREMENT, '
+            'name VARCHAR(50) NOT NULL, '
+            'age INT NOT NULL, '
+            'PRIMARY KEY (id)'
+            ') '
+        )
+        # CUIDADO: isso limpa a tabela
+        cursor.execute('TRUNCATE TABLE users')
+    connection.commit()
+
+    with connection.cursor() as cursor:
+        sql = (
+            'INSERT INTO users '
+            '(name, age) VALUES (%(name)s, %(age)s) '
+        )
+        data = {
+            "name": "Larissa",
+            "age": "20"
+        }
+        result = cursor.execute(sql, data)
+    connection.commit()
 
 
-
-    cursor.close()
