@@ -1,8 +1,9 @@
 import pymysql
 import dotenv
 import os
+from typing import cast
 
-
+CURRENT_CURSOR = pymysql.cursors.SSDictCursor
 
 dotenv.load_dotenv()
 
@@ -11,52 +12,33 @@ connection = pymysql.connect(
     user=os.environ['MYSQL_USER'],
     password=os.environ['MYSQL_PASSWORD'],
     database=os.environ['MYSQL_DATABASE'],
+    cursorclass=CURRENT_CURSOR,
 )
 
 with connection:
+  
     with connection.cursor() as cursor:
-        cursor.execute(
-            'CREATE TABLE IF NOT EXISTS users ('
-            'id INT NOT NULL AUTO_INCREMENT, '
-            'name VARCHAR(50) NOT NULL, '
-            'age INT NOT NULL, '
-            'PRIMARY KEY (id)'
-            ') '
-        )
-        # CUIDADO: isso limpa a tabela
-        # cursor.execute('TRUNCATE TABLE users')
-    connection.commit()
-
-    # Inserindo um valor usando placeholder e dicionarios
-    # with connection.cursor() as cursor:
-        # sql = (
-            # 'INSERT INTO users '
-            # '(name, age) VALUES (%(name)s, %(age)s) '
-        # )
-        # data = (
-            # {"name": "Larissa","age": "20"},
-            # {"name": "Caique","age": "21"},
-            # {"name": "Matheus","age": "23"},
-        # )
-        # result = cursor.executemany(sql, data)
-    # connection.commit()
-
-    # Editando com UPDATE, WHERE e placeholders no PyMySQL
-    with connection.cursor() as cursor:
+        cursor = cast(CURRENT_CURSOR, cursor)
 
         sql = (
             f'UPDATE users '
             'SET name=%s, age=%s '
-            'WHERE id = %s'
+            'WHERE id=%s'
         )
 
-        cursor.execute(sql, ('Caique', 20, 1))  
-        connection.commit()
+        cursor.execute(sql, ('caique', 19, 1))
 
-        cursor.execute(f'SELECT * from users')
-        
-        for row in cursor.fetchall():
+        cursor.execute(f'SELECT * FROM users ')
+        print('For 1: ')
+
+        for row in cursor.fetchall_unbuffered():
             print(row)
 
+            
+        print()
+        print('For 2: ')
+        for row in cursor.fetchall_unbuffered():
+            print(row)
+    connection.commit()
 
 
