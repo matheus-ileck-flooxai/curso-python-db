@@ -41,17 +41,19 @@ with connection:
         # result = cursor.executemany(sql, data)
     # connection.commit()
 
-    # Deletando os valores com DELETE
+    # Editando com UPDATE, WHERE e placeholders no PyMySQL
     with connection.cursor() as cursor:
 
         sql = (
-            f'DELETE FROM users '
+            f'UPDATE users '
+            'SET name=%s, age=%s '
             'WHERE id = %s'
         )
 
-        cursor.execute(sql, (2))  
+        cursor.execute(sql, ('Caique', 20, 1))  
         connection.commit()
 
+        cursor.execute(f'SELECT * from users')
         
         for row in cursor.fetchall():
             print(row)
