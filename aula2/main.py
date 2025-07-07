@@ -28,17 +28,31 @@ with connection:
     connection.commit()
 
     # Inserindo um valor usando placeholder e dicionarios
+    # with connection.cursor() as cursor:
+        # sql = (
+            # 'INSERT INTO users '
+            # '(name, age) VALUES (%(name)s, %(age)s) '
+        # )
+        # data = (
+            # {"name": "Larissa","age": "20"},
+            # {"name": "Caique","age": "21"},
+            # {"name": "Matheus","age": "23"},
+        # )
+        # result = cursor.executemany(sql, data)
+    # connection.commit()
+
+    # Lendo os valores com SELECT
     with connection.cursor() as cursor:
         sql = (
-            'INSERT INTO users '
-            '(name, age) VALUES (%(name)s, %(age)s) '
+            f'SELECT * FROM users'
         )
-        data = (
-            {"name": "Larissa","age": "20"},
-            {"name": "Caique","age": "21"},
-            {"name": "Matheus","age": "23"},
-        )
-        result = cursor.executemany(sql, data)
-    connection.commit()
+        cursor.execute(sql) 
+
+        data5 = cursor.fetchall()
+
+        for row in data5:
+            print(row)
+
+
 
 
