@@ -41,18 +41,20 @@ with connection:
         # result = cursor.executemany(sql, data)
     # connection.commit()
 
-    # Lendo os valores com SELECT
+    # Deletando os valores com DELETE
     with connection.cursor() as cursor:
+
         sql = (
-            f'SELECT * FROM users'
+            f'DELETE FROM users '
+            'WHERE id = %s'
         )
-        cursor.execute(sql) 
 
-        data5 = cursor.fetchall()
+        cursor.execute(sql, (2))  
+        connection.commit()
 
-        for row in data5:
+        
+        for row in cursor.fetchall():
             print(row)
-
 
 
 
