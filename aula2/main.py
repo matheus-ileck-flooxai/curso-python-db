@@ -24,19 +24,21 @@ with connection:
             ') '
         )
         # CUIDADO: isso limpa a tabela
-        cursor.execute('TRUNCATE TABLE users')
+        # cursor.execute('TRUNCATE TABLE users')
     connection.commit()
 
+    # Inserindo um valor usando placeholder e dicionarios
     with connection.cursor() as cursor:
         sql = (
             'INSERT INTO users '
             '(name, age) VALUES (%(name)s, %(age)s) '
         )
-        data = {
-            "name": "Larissa",
-            "age": "20"
-        }
-        result = cursor.execute(sql, data)
+        data = (
+            {"name": "Larissa","age": "20"},
+            {"name": "Caique","age": "21"},
+            {"name": "Matheus","age": "23"},
+        )
+        result = cursor.executemany(sql, data)
     connection.commit()
 
 
